@@ -9,6 +9,7 @@ const tasksServer = require('./tasks/server');
 const performanceServer = require('./performance/server');
 const { config } = require('./config');
 const { LoggerAction } = require('./lib/logger')
+const { TracerAction } = require('./lib/tracker')
 
 async function init(logger) {
   try {

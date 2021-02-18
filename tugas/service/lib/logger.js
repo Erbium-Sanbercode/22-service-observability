@@ -4,7 +4,7 @@ const myFormat = format.printf(({ level, message, timestamp }) => {
   return `${timestamp} ${level}: ${message}`;
 });
 
-exports.LoggerAction = function(level, serviceName) {
+function LoggerAction (level, serviceName) {
   const logger = createLogger({
     level: level || 'info',
     format: format.combine(format.timestamp(), myFormat),
@@ -21,4 +21,8 @@ exports.LoggerAction = function(level, serviceName) {
   });
 
   return logger;
+}
+
+module.exports = {
+    LoggerAction,
 }
