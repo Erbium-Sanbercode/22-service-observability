@@ -8,38 +8,39 @@ const workerServer = require('./worker/server');
 const tasksServer = require('./tasks/server');
 const performanceServer = require('./performance/server');
 const { config } = require('./config');
+const { LoggerAction } = require('./lib/logger')
 
-async function init() {
+async function init(logger) {
   try {
-    console.log('connect to database');
+    logger.info('connect to database');
     await orm.connect([WorkerSchema, TaskSchema], config.database);
-    console.log('database connected');
+    logger.info('database connected');
   } catch (err) {
-    console.error('database connection failed');
+    logger.error('database connection failed');
     process.exit(1);
   }
   try {
-    console.log('connect to object storage');
+    logger.info('connect to object storage');
     await storage.connect('task-manager', config.minio);
-    console.log('object storage connected');
+    logger.info('object storage connected');
   } catch (err) {
-    console.error('object storage connection failed');
+    logger.error('object storage connection failed');
     process.exit(1);
   }
   try {
-    console.log('connect to message bus');
+    logger.info('connect to message bus');
     await bus.connect();
-    console.log('message bus connected');
+    logger.info('message bus connected');
   } catch (err) {
-    console.error('message bus connection failed');
+    logger.error('message bus connection failed');
     process.exit(1);
   }
   try {
-    console.log('connect to key value store');
+    logger.info('connect to key value store');
     await kv.connect();
-    console.log('key value store connected');
+    logger.info('key value store connected');
   } catch (err) {
-    console.error('key value store connection failed');
+    logger.error('key value store connection failed');
     process.exit(1);
   }
 }
@@ -50,22 +51,28 @@ async function onStop() {
 }
 
 async function main(command) {
+  let logger;
+  logger = LoggerAction('info','main-service')
   switch (command) {
     case 'performance':
-      await init();
+      logger = LoggerAction('info','performance-service')
+      await init(logger);
       performanceServer.run(onStop);
       break;
     case 'task':
-      await init();
+      logger = LoggerAction('info','task-service')
+      await init(logger);
       tasksServer.run(onStop);
       break;
     case 'worker':
-      await init();
+      logger = LoggerAction('info','worker-service')
+      await init(logger);
       workerServer.run(onStop);
       break;
     default:
-      console.log(`${command} tidak dikenali`);
-      console.log('command yang valid: task, worker, performance');
+      command = (typeof(command) == 'undefined' || typeof(command) == 'null') ? 'command':command;
+      logger.info(`${command} tidak dikenali`);
+      logger.info('command yang valid: task, worker, performance');
   }
 }
 
