@@ -56,6 +56,11 @@
     "swagger-ui": "^3.42.0",
     "typedoc": "^0.20.25",
     "typeorm": "^0.2.30",
-    "vue": "^2.6.12"
+    "vue": "^2.6.12",
+    "@sentry/tracing": "^6.1.0",
+    "@sentry/vue": "^6.1.0",
+    "jaeger-client": "^3.18.1",
+    "opentracing": "^0.14.5",
+    "winston": "^3.3.3"
   }
 }
