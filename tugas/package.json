@@ -22,7 +22,20 @@
     "style-loader": "^2.0.0",
     "webpack": "^5.17.0",
     "webpack-cli": "^4.4.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^3.11.2",
+    "@types/jaeger-client": "^3.15.4",
+    "@types/winston": "^2.4.4",
+    "@typescript-eslint/eslint-plugin": "^4.15.0",
+    "@typescript-eslint/parser": "^4.15.0",
+    "dotenv-webpack": "^6.0.0",
+    "json-loader": "^0.5.7",
+    "livereload": "^0.9.1",
+    "ts-loader": "^8.0.17",
+    "ts-node": "^9.1.1",
+    "typedoc": "^0.20.25",
+    "typescript": "^4.1.5",
+    "vercel": "^21.2.3",
+    "yaml-loader": "^0.6.0"
   },
   "dependencies": {
     "busboy": "^0.3.1",
@@ -38,6 +51,14 @@
     "typeorm": "^0.2.30",
     "@reduxjs/toolkit": "^1.5.0",
     "rxjs": "^6.6.3",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "@sentry/tracing": "^6.1.0",
+    "@sentry/vue": "^6.1.0",
+    "jaeger-client": "^3.18.1",
+    "opentracing": "^0.14.5",
+    "rc": "^1.2.8",
+    "swagger-ui": "^3.42.0",
+    "vue": "^2.6.12",
+    "winston": "^3.3.3"
   }
 }
