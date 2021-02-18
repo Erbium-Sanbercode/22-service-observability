@@ -11,37 +11,37 @@ const { config } = require('./config');
 const { LoggerAction } = require('./lib/logger')
 const { TracerAction } = require('./lib/tracker')
 
-async function init(logger) {
+async function init(ctx) {
   try {
-    logger.info('connect to database');
+    ctx.logger.info('connect to database');
     await orm.connect([WorkerSchema, TaskSchema], config.database);
-    logger.info('database connected');
+    ctx.logger.info('database connected');
   } catch (err) {
-    logger.error('database connection failed');
+    ctx.logger.error('database connection failed');
     process.exit(1);
   }
   try {
-    logger.info('connect to object storage');
+    ctx.logger.info('connect to object storage');
     await storage.connect('task-manager', config.minio);
-    logger.info('object storage connected');
+    ctx.logger.info('object storage connected');
   } catch (err) {
-    logger.error('object storage connection failed');
+    ctx.logger.error('object storage connection failed');
     process.exit(1);
   }
   try {
-    logger.info('connect to message bus');
+    ctx.logger.info('connect to message bus');
     await bus.connect();
-    logger.info('message bus connected');
+    ctx.logger.info('message bus connected');
   } catch (err) {
-    logger.error('message bus connection failed');
+    ctx.logger.error('message bus connection failed');
     process.exit(1);
   }
   try {
-    logger.info('connect to key value store');
+    ctx.logger.info('connect to key value store');
     await kv.connect();
-    logger.info('key value store connected');
+    ctx.logger.info('key value store connected');
   } catch (err) {
-    logger.error('key value store connection failed');
+    ctx.logger.error('key value store connection failed');
     process.exit(1);
   }
 }
@@ -53,21 +53,37 @@ async function onStop() {
 
 async function main(command) {
   let logger;
-  logger = LoggerAction('info','main-service')
+  let tracker;
+  let ctx;
   switch (command) {
     case 'performance':
       logger = LoggerAction('info','performance-service')
-      await init(logger);
-      performanceServer.run(onStop);
+      tracker = TracerAction('performance-service');
+      ctx = {
+        logger,
+        tracer,
+      };
+      await init(ctx);
+      performanceServer.run(ctx, onStop);
       break;
     case 'task':
       logger = LoggerAction('info','task-service')
-      await init(logger);
+      tracker = TracerAction('task-service');
+      ctx = {
+        logger,
+        tracer,
+      };
+      await init(ctx);
       tasksServer.run(onStop);
       break;
     case 'worker':
       logger = LoggerAction('info','worker-service')
-      await init(logger);
+      tracker = TracerAction('worker-service');
+      ctx = {
+        logger,
+        tracer,
+      };
+      await init(ctx);
       workerServer.run(onStop);
       break;
     default:
